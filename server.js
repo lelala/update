@@ -3,6 +3,26 @@ var http = require('http');
 var express = require('express')();
 var config = require('./config.json');
 
+express.get('/', function (req, res) {
+    var log = '`';
+    var spawn = require('child_process').spawn;
+    var cat = spawn('cat', ['server.js'], { cwd: '/www/update' });
+    cat.stdout.on('data', function (data) {
+        log += (log == '`'?'':'\n`') + data;
+        console.log(data);
+        //if (data == "Password:" && target.git && target.git.password)
+        //    git.stdin.write(target.git.password);
+        //git.stdin.write('\n');
+    });
+    cat.on('exit', function (code) {
+        var data = 'cat process exited with code ' + code;
+        log += (log == '`'?'':'\n`') + data;
+        console.log(data);
+        res.end(log);
+    });
+    return;
+});
+
 config.targets.forEach(function (target) {
     express.get('/' + target.name, function (req, res) {
         var log = '`';
