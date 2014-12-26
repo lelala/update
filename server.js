@@ -28,14 +28,18 @@ config.targets.forEach(function (target) {
         var log = '`';
         var spawn = require('child_process').spawn;
         var git = spawn('git', ['pull'], { cwd: target.path });
+        process.stdin.on('readable', function () {
+            var data = process.stdin.read();
+            if (data == "Password:") {
+                if (target.git && target.git.password)
+                    process.stdout.write(target.git.password);
+                process.stdout.write('\n');
+            }
+        });
+
         git.stdout.on('data', function (data) {
             log += (log == '`'?'':'\n`') + data;
             console.log(data);
-            if (data == "Password:") {
-                if (target.git && target.git.password)
-                    git.stdin.write(target.git.password);
-                git.stdin.write('\n');
-            }
         });
         git.on('exit', function (code) {
             var data = 'git process exited with code ' + code;
