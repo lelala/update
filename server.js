@@ -31,9 +31,11 @@ config.targets.forEach(function (target) {
         git.stdout.on('data', function (data) {
             log += (log == '`'?'':'\n`') + data;
             console.log(data);
-            if (data == "Password:" && target.git && target.git.password)
-                git.stdin.write(target.git.password);
-            git.stdin.write('\n');
+            if (data == "Password:") {
+                if (target.git && target.git.password)
+                    git.stdin.write(target.git.password);
+                git.stdin.write('\n');
+            }
         });
         git.on('exit', function (code) {
             var data = 'git process exited with code ' + code;
