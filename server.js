@@ -28,7 +28,10 @@ config.targets.forEach(function (target) {
         var log = '`';
         var spawn = require('child_process').spawn;
         var git = spawn('git', ['pull'], { cwd: target.path });
+
+        
         process.stdin.on('readable', function () {
+            process.stdin.resume();
             var data = process.stdin.read();
             log += (log == '`'?'':'\n`') + data;
             console.log(data);
