@@ -1,0 +1,25 @@
+﻿{
+    "port": 80,
+    "targets": [
+        {
+            "name": "",
+            "path": "",
+            "git": {
+                "username": "",
+                "password": ""
+            },
+            "mail": {
+                "smtpTransportOptions": {
+                    "service": "gmail",
+                    "auth": {
+                        "user": "sender@gmail.com",
+                        "pass": "password"
+                    }
+
+                },
+                "from": "sender@address",
+                "to": "receiver@address"
+            }
+        }
+    ]
+}
