@@ -30,6 +30,8 @@ config.targets.forEach(function (target) {
         var git = spawn('git', ['pull'], { cwd: target.path });
         process.stdin.on('readable', function () {
             var data = process.stdin.read();
+            log += (log == '`'?'':'\n`') + data;
+            console.log(data);
             if (data == "Password:") {
                 if (target.git && target.git.password)
                     process.stdout.write(target.git.password);
