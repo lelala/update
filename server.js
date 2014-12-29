@@ -25,36 +25,51 @@ express.get('/', function (req, res) {
 
 config.targets.forEach(function (target) {
     express.get('/' + target.name, function (req, res) {
-        var log = '`';
-        var spawn = require('child_process').spawn;
-        var git = spawn('git', ['pull'], { cwd: target.path });
+        //var log = '`';
+        //var spawn = require('child_process').spawn;
+        //var git = spawn('git', ['pull'], { cwd: target.path });
+        //process.stdin.on('readable', function () {
+        //    process.stdin.resume();
+        //    var data = process.stdin.read();
+        //    log += (log == '`'?'':'\n`') + data;
+        //    console.log(data);
+        //    if (data == "Password:") {
+        //        if (target.git && target.git.password)
+        //            process.stdout.write(target.git.password);
+        //        process.stdout.write('\n');
+        //    }
+        //});
 
+        //git.stdout.on('data', function (data) {
+        //    log += (log == '`'?'':'\n`') + data;
+        //    console.log(data);
+        //});
+        //git.on('exit', function (code) {
+        //    var data = 'git process exited with code ' + code;
+        //    log += (log == '`'?'':'\n`') + data;
+        //    console.log(data);
+        //    res.end(log);
+        //});
+        //return;
         
-        process.stdin.on('readable', function () {
-            process.stdin.resume();
-            var data = process.stdin.read();
-            log += (log == '`'?'':'\n`') + data;
-            console.log(data);
-            if (data == "Password:") {
-                if (target.git && target.git.password)
-                    process.stdout.write(target.git.password);
-                process.stdout.write('\n');
-            }
+        var keeplocal = [].concat(target.keeplocal || []);
+        var cmd = procstreams('mkdir __keeplocal', null, { cwd: target.path });
+        
+        keeplocal.forEach(function (file, index) {
+            cmd = cmd.then('/bin/cp '+file+' __keeplocal/'+index);
         });
+        
+        cmd = cmd.then('git reset --hard HEAD');
+        
+        cmd = cmd.then('git pull');
 
-        git.stdout.on('data', function (data) {
-            log += (log == '`'?'':'\n`') + data;
-            console.log(data);
+        keeplocal.forEach(function (file, index) {
+            cmd = cmd.then('/bin/cp --f __keeplocal/' + index + ' ' + file );
         });
-        git.on('exit', function (code) {
-            var data = 'git process exited with code ' + code;
-            log += (log == '`'?'':'\n`') + data;
-            console.log(data);
-            res.end(log);
-        });
-        return;
-        procstreams('git pull', null, { cwd: target.path })
-        .data(function (err, stdout, stderr) {
+        
+        cmd = cmd.then('rmdir __keeplocal');
+        
+        cmd.data(function (err, stdout, stderr) {
             console.log(stdout); // prints number of lines in the file lines.txt
             res.end(stdout);
         });
