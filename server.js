@@ -74,8 +74,8 @@ config.targets.forEach(function (target) {
         //    cmd = cmd.then('/bin/rm --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });
         //});
         
-        console.log('rmdir -rf ' + __dirname + '/__keeplocal');
-        cmd = cmd.then('rmdir -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });
+        console.log('rm -rf ' + __dirname + '/__keeplocal');
+        cmd = cmd.then('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });
         
         cmd.data(function (err, stdout, stderr) {
             log += (log == ''?'':'\n') + stdout;
