@@ -53,24 +53,25 @@ config.targets.forEach(function (target) {
         //return;
         var log = '';
         var keeplocal = [].concat(target.keeplocal || []);
-        //var Stream = require('stream').Stream
+        var Stream = require('stream').Stream();
         
-        //// build a custom stream to grep even lines from input
-        //var grepEven = new Stream
-        //grepEven.writable = true
-        //grepEven.readable = true
+        // build a custom stream to grep even lines from input
+        var grepEven = new Stream();
+        grepEven.writable = true;
+        grepEven.readable = true;
         
-        //var data = '';
-        //grepEven.write = function (buf) { data += buf };
-        //grepEven.end = function () {
-        //    this.emit('data', data
-        //        .split('\n')
-        //        .map(function (line) { return line + '\n' })
-        //        .filter(function (line) { return line.match(/even/) })
-        //        .join('')
-        //    )
-        //    this.emit('end')
-        //};
+        var data = '';
+        grepEven.write = function (buf) { data += buf };
+        grepEven.end = function () {
+            this.emit('data', data
+                .split('\n')
+                .map(function (line) { return line + '\n' })
+                .filter(function (line) { return line.match(/even/) })
+                .join('')
+            );
+            this.emit('end');
+            res.end(data);
+        };
         
         
         console.log('mkdir __keeplocal');
@@ -85,7 +86,7 @@ config.targets.forEach(function (target) {
         procstreams('git reset --hard HEAD', null, { cwd: target.path });//.pipe(process.stdout);
         
         console.log('git pull');
-        procstreams('git pull', null, { cwd: target.path }).pipe(process.stdout);
+        procstreams('git pull', null, { cwd: target.path }).pipe(grepEven);
         
         //keeplocal.forEach(function (file, index) {
         //    console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
