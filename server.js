@@ -102,11 +102,11 @@ config.targets.forEach(function (target) {
             //    //console.log("stderr:" + stderr);
             //});
             
-            cmd = cmd.and('/bin/cp -f' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
+            cmd = cmd.and('/bin/mv -f' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
             cmd.data(function (err, stdout, stderr) {
-                log += (log == ''?'':'\n') + ('/bin/cp -f ' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file)) + '\n' + stdout;
+                log += (log == ''?'':'\n') + ('/bin/mv -f ' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file)) + '\n' + stdout;
                 
-                console.log('/bin/cp -f ' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
+                console.log('/bin/mv -f ' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
                 //console.log("err:" + err);
                 console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
             //console.log("stderr:" + stderr);
@@ -122,7 +122,9 @@ config.targets.forEach(function (target) {
         //    //console.log("stderr:" + stderr);
         //});
         cmd.on('exit', function () {
-            res.end(log);
+            setTimeout(function () {
+                res.end(log);
+            }, 200);
         });;
     });
 });
