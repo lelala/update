@@ -53,24 +53,24 @@ config.targets.forEach(function (target) {
         //return;
         var log = '';
         var keeplocal = [].concat(target.keeplocal || []);
-        var Stream = require('stream').Stream
+        //var Stream = require('stream').Stream
         
-        // build a custom stream to grep even lines from input
-        var grepEven = new Stream
-        grepEven.writable = true
-        grepEven.readable = true
+        //// build a custom stream to grep even lines from input
+        //var grepEven = new Stream
+        //grepEven.writable = true
+        //grepEven.readable = true
         
-        var data = '';
-        grepEven.write = function (buf) { data += buf };
-        grepEven.end = function () {
-            this.emit('data', data
-                .split('\n')
-                .map(function (line) { return line + '\n' })
-                .filter(function (line) { return line.match(/even/) })
-                .join('')
-            )
-            this.emit('end')
-        };
+        //var data = '';
+        //grepEven.write = function (buf) { data += buf };
+        //grepEven.end = function () {
+        //    this.emit('data', data
+        //        .split('\n')
+        //        .map(function (line) { return line + '\n' })
+        //        .filter(function (line) { return line.match(/even/) })
+        //        .join('')
+        //    )
+        //    this.emit('end')
+        //};
         
         
         console.log('mkdir __keeplocal');
