@@ -104,14 +104,15 @@ config.targets.forEach(function (target) {
             });
         });
         
-        cmd = cmd.then('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });
-        cmd.data(function (err, stdout, stderr) {
-            log += (log == ''?'':'\n') + 'rm -rf ' + __dirname + '/__keeplocal\n' + stdout;
-            console.log('rm -rf ' + __dirname + '/__keeplocal');
-            //console.log("err:" + err);
-            console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
-            //console.log("stderr:" + stderr);
-        }).on('exit', function () {
+        //cmd = cmd.then('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });
+        //cmd.data(function (err, stdout, stderr) {
+        //    log += (log == ''?'':'\n') + 'rm -rf ' + __dirname + '/__keeplocal\n' + stdout;
+        //    console.log('rm -rf ' + __dirname + '/__keeplocal');
+        //    //console.log("err:" + err);
+        //    console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
+        //    //console.log("stderr:" + stderr);
+        //});
+        cmd.on('exit', function () {
             res.end(log);
         });;
     });
