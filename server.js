@@ -74,18 +74,18 @@ config.targets.forEach(function (target) {
         
         
         console.log('mkdir __keeplocal');
-        procstreams('mkdir __keeplocal', null, { cwd: target.path }).pipe(process.stdout);
+        procstreams('mkdir __keeplocal', null, { cwd: target.path });//.pipe(process.stdout);
         
         keeplocal.forEach(function (file, index) {
             console.log('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index);
-            procstreams('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path }).pipe(process.stdout);
+            procstreams('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });//.pipe(process.stdout);
         });
         
         console.log('git reset --hard HEAD');
-        procstreams('git reset --hard HEAD', null, { cwd: target.path }).pipe(process.stdout);
+        procstreams('git reset --hard HEAD', null, { cwd: target.path });//.pipe(process.stdout);
         
         console.log('git pull');
-        procstreams('git pull', null, { cwd: target.path }).pipe(process.stdout);
+        procstreams('git pull', null, { cwd: target.path });//.pipe(process.stdout);
         
         //keeplocal.forEach(function (file, index) {
         //    console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
@@ -95,7 +95,7 @@ config.targets.forEach(function (target) {
         //});
         
         console.log('rm -rf ' + __dirname + '/__keeplocal');
-        procstreams('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path }).pipe(process.stdout);
+        procstreams('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });//.pipe(process.stdout);
         
         cmd.data(function (err, stdout, stderr) {
             log += (log == ''?'':'\n') + stdout;
