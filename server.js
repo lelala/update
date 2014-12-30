@@ -55,25 +55,37 @@ config.targets.forEach(function (target) {
         var keeplocal = [].concat(target.keeplocal || []);
         
         console.log('mkdir __keeplocal');
-        var cmd = procstreams('mkdir __keeplocal', null, { cwd: target.path });
+        var cmd = procstreams('mkdir ' + __dirname + '/__keeplocal', null, { cwd: target.path });
         
         keeplocal.forEach(function (file, index) {
             console.log('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index);
-            cmd = cmd.then('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });
+            cmd = cmd.and('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });
         });
         
         console.log('git reset --hard HEAD');
-        cmd = cmd.then('git reset --hard HEAD', null, { cwd: target.path });
+        cmd = cmd.and('git reset --hard HEAD', null, { cwd: target.path });
         
+        cmd.data(function (err, stdout, stderr) {
+            log += (log == ''?'':'\n') + stdout;
+            console.log("err:" + err);
+            console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
+            console.log("stderr:" + stderr);
+        })
+
         console.log('git pull');
-        cmd = cmd.then('git pull', null, { cwd: target.path });
+        cmd = cmd.and('git pull', null, { cwd: target.path });
         
-        //keeplocal.forEach(function (file, index) {
-        //    console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
-        //    cmd = cmd.then('/bin/cp --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });//.pipe('');
-        //    console.log('/bin/rm --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
-        //    cmd = cmd.then('/bin/rm --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });
-        //});
+        cmd.data(function (err, stdout, stderr) {
+            log += (log == ''?'':'\n') + stdout;
+            console.log("err:" + err);
+            console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
+            console.log("stderr:" + stderr);
+        })
+
+        keeplocal.forEach(function (file, index) {
+            console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
+            cmd = cmd.and('/bin/cp --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });
+        });
         
         console.log('rm -rf ' + __dirname + '/__keeplocal');
         cmd = cmd.then('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });
