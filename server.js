@@ -61,21 +61,21 @@ config.targets.forEach(function (target) {
             cmd = cmd.then('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });
         });
         
-        console.log('git reset --hard HEAD');
-        cmd = cmd.then('git reset --hard HEAD', null, { cwd: target.path });
+        //console.log('git reset --hard HEAD');
+        //cmd = cmd.then('git reset --hard HEAD', null, { cwd: target.path });
         
-        console.log('git pull');
-        cmd = cmd.then('git pull', null, { cwd: target.path });
+        //console.log('git pull');
+        //cmd = cmd.then('git pull', null, { cwd: target.path });
         
-        keeplocal.forEach(function (file, index) {
-            console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
-            cmd = cmd.then('/bin/cp --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });//.pipe('');
-            console.log('/bin/rm --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
-            cmd = cmd.then('/bin/rm --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });
-        });
+        //keeplocal.forEach(function (file, index) {
+        //    console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
+        //    cmd = cmd.then('/bin/cp --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });//.pipe('');
+        //    console.log('/bin/rm --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
+        //    cmd = cmd.then('/bin/rm --f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });
+        //});
         
-        console.log('rmdir ' + __dirname + '/__keeplocal');
-        cmd = cmd.then('rmdir ' + __dirname + '/__keeplocal', null, { cwd: target.path });
+        //console.log('rmdir ' + __dirname + '/__keeplocal');
+        //cmd = cmd.then('rmdir ' + __dirname + '/__keeplocal', null, { cwd: target.path });
         
         cmd.data(function (err, stdout, stderr) {
             log += (log == ''?'':'\n') + stdout;
