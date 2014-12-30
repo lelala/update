@@ -72,7 +72,7 @@ config.targets.forEach(function (target) {
         //    cmd = cmd.then('/bin/cp ' + __dirname + '/__keeplocal/' + index + ' ' + file).pipe('--f');
         //});
         
-        cmd = cmd.then('rmdir __keeplocal');
+        cmd = cmd.then('rmdir  ' + __dirname + '/__keeplocal');
         
         cmd.data(function (err, stdout, stderr) {
             log += (log == ''?'':'\n`') + stdout;
