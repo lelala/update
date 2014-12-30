@@ -85,7 +85,7 @@ config.targets.forEach(function (target) {
         procstreams('git reset --hard HEAD', null, { cwd: target.path });//.pipe(process.stdout);
         
         console.log('git pull');
-        procstreams('git pull', null, { cwd: target.path });//.pipe(process.stdout);
+        procstreams('git pull', null, { cwd: target.path }).pipe(process.stdout);
         
         //keeplocal.forEach(function (file, index) {
         //    console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
@@ -97,12 +97,12 @@ config.targets.forEach(function (target) {
         console.log('rm -rf ' + __dirname + '/__keeplocal');
         procstreams('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });//.pipe(process.stdout);
         
-        cmd.data(function (err, stdout, stderr) {
-            log += (log == ''?'':'\n') + stdout;
-            console.log(stdout); // prints number of lines in the file lines.txt
-        }).on('exit', function () {
-            res.end(log);
-        });;
+        //cmd.data(function (err, stdout, stderr) {
+        //    log += (log == ''?'':'\n') + stdout;
+        //    console.log(stdout); // prints number of lines in the file lines.txt
+        //}).on('exit', function () {
+        //    res.end(log);
+        //});;
     });
 });
 http.createServer(express).listen(config.port, function () {
