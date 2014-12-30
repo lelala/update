@@ -69,7 +69,7 @@ config.targets.forEach(function (target) {
         
         keeplocal.forEach(function (file, index) {
             console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
-            cmd = cmd.then('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
+            cmd = cmd.then('/bin/cp ' + __dirname + '/__keeplocal/' + index + ' ' + file).pipe('--f');
         });
         
         cmd = cmd.then('rmdir __keeplocal');
