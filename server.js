@@ -91,22 +91,22 @@ config.targets.forEach(function (target) {
             console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
             //console.log("stderr:" + stderr);
         })
-        
+        var path = require('path');
         keeplocal.forEach(function (file, index) {
-            cmd = cmd.then('rm -r ' + file, null, { cwd: target.path });
-            cmd.data(function (err, stdout, stderr) {
-                log += (log == ''?'':'\n') + 'rm -rf ' + file + '\n' + stdout;
-                console.log('rm -r ' + file);
-                //console.log("err:" + err);
-                console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
-                //console.log("stderr:" + stderr);
-            });
+            //cmd = cmd.then('rm -r ' + file, null, { cwd: target.path });
+            //cmd.data(function (err, stdout, stderr) {
+            //    log += (log == ''?'':'\n') + 'rm -rf ' + file + '\n' + stdout;
+            //    console.log('rm -r ' + file);
+            //    //console.log("err:" + err);
+            //    console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
+            //    //console.log("stderr:" + stderr);
+            //});
             
-            cmd = cmd.and('/bin/cp -f' + __dirname + '/__keeplocal/' + index + ' ./' + file, null, { cwd: target.path });
+            cmd = cmd.and('/bin/cp -f' + __dirname + '/__keeplocal/' + index + ' ' + path.join(target.path, file));
             cmd.data(function (err, stdout, stderr) {
-                log += (log == ''?'':'\n') + '/bin/cp -f ' + __dirname + '/__keeplocal/' + index + ' ./' + file + '\n' + stdout;
+                log += (log == ''?'':'\n') + '/bin/cp -f ' + __dirname + '/__keeplocal/' + index + ' ' + path.join(target.path, file) + '\n' + stdout;
                 
-                console.log('/bin/cp -f ' + __dirname + '/__keeplocal/' + index + ' ./' + file);
+                console.log('/bin/cp -f ' + __dirname + '/__keeplocal/' + index + ' ' + path.join(target.path, file));
                 //console.log("err:" + err);
                 console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
             //console.log("stderr:" + stderr);
