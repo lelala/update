@@ -64,10 +64,10 @@ config.targets.forEach(function (target) {
         })
         
         keeplocal.forEach(function (file, index) {
-            cmd = cmd.and('cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });
+            cmd = cmd.and('/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });
             cmd.data(function (err, stdout, stderr) {
-                log += (log == ''?'':'\n') + 'cp ' + file + ' ' + __dirname + '/__keeplocal/' + index + '\n' + stdout;
-                console.log('cp ' + file + ' ' + __dirname + '/__keeplocal/' + index);
+                log += (log == ''?'':'\n') + '/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/' + index + '\n' + stdout;
+                console.log('/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/' + index);
                 //console.log("err:" + err);
                 console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
             //console.log("stderr:" + stderr);
@@ -93,12 +93,11 @@ config.targets.forEach(function (target) {
         })
         
         keeplocal.forEach(function (file, index) {
-            console.log('yes | cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
-            cmd = cmd.and('yes | cp' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });
+            cmd = cmd.and('/bin/cp -f' + __dirname + '/__keeplocal/' + index + ' ' + file, null, { cwd: target.path });
             cmd.data(function (err, stdout, stderr) {
-                log += (log == ''?'':'\n') + 'yes | cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file + '\n' + stdout;
+                log += (log == ''?'':'\n') + '/bin/cp -f ' + __dirname + '/__keeplocal/' + index + ' ' + file + '\n' + stdout;
                 
-                console.log('yes | cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
+                console.log('/bin/cp -f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
                 //console.log("err:" + err);
                 console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
             //console.log("stderr:" + stderr);
