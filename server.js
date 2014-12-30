@@ -51,28 +51,35 @@ config.targets.forEach(function (target) {
         //    res.end(log);
         //});
         //return;
-        
+        var log = '';
         var keeplocal = [].concat(target.keeplocal || []);
+        console.log('mkdir __keeplocal');
         var cmd = procstreams('mkdir __keeplocal', null, { cwd: target.path });
         
         keeplocal.forEach(function (file, index) {
+            console.log('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index);
             cmd = cmd.then('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index);
         });
         
+        console.log('git reset --hard HEAD');
         cmd = cmd.then('git reset --hard HEAD');
         
+        console.log('git pull');
         cmd = cmd.then('git pull');
         
         keeplocal.forEach(function (file, index) {
+            console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
             cmd = cmd.then('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
         });
         
         cmd = cmd.then('rmdir __keeplocal');
         
         cmd.data(function (err, stdout, stderr) {
+            log+= (log == ''?'':'\n`') + stdout;
             console.log(stdout); // prints number of lines in the file lines.txt
-            res.end(stdout);
-        });
+        }).on('exit', function () {
+            res.end(log);
+        });;
     });
 });
 http.createServer(express).listen(config.port);
