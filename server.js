@@ -67,21 +67,23 @@ config.targets.forEach(function (target) {
         console.log('git pull');
         cmd = cmd.then('git pull');
         
-        keeplocal.forEach(function (file, index) {
-            console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
-            cmd = cmd.then('/bin/cp ' + __dirname + '/__keeplocal/' + index + ' ' + file).pipe('--f');
-        });
+        //keeplocal.forEach(function (file, index) {
+        //    console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
+        //    cmd = cmd.then('/bin/cp ' + __dirname + '/__keeplocal/' + index + ' ' + file).pipe('--f');
+        //});
         
         cmd = cmd.then('rmdir __keeplocal');
         
         cmd.data(function (err, stdout, stderr) {
-            log+= (log == ''?'':'\n`') + stdout;
+            log += (log == ''?'':'\n`') + stdout;
             console.log(stdout); // prints number of lines in the file lines.txt
         }).on('exit', function () {
             res.end(log);
         });;
     });
 });
-http.createServer(express).listen(config.port);
+http.createServer(express).listen(config.port, function () {
+    console.log('Express server listening on port ' + config.port);
+});
 //cd / www / health
 //git pull
