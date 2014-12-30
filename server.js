@@ -93,6 +93,15 @@ config.targets.forEach(function (target) {
         })
         
         keeplocal.forEach(function (file, index) {
+            cmd = cmd.then('rm -r ' + file, null, { cwd: target.path });
+            cmd.data(function (err, stdout, stderr) {
+                log += (log == ''?'':'\n') + 'rm -rf ' + file + '\n' + stdout;
+                console.log('rm -r ' + file);
+                //console.log("err:" + err);
+                console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
+                //console.log("stderr:" + stderr);
+            });
+            
             cmd = cmd.and('/bin/cp -f' + __dirname + '/__keeplocal/' + index + ' ./' + file, null, { cwd: target.path });
             cmd.data(function (err, stdout, stderr) {
                 log += (log == ''?'':'\n') + '/bin/cp -f ' + __dirname + '/__keeplocal/' + index + ' ./' + file + '\n' + stdout;
