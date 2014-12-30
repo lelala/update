@@ -53,40 +53,20 @@ config.targets.forEach(function (target) {
         //return;
         var log = '';
         var keeplocal = [].concat(target.keeplocal || []);
-        //var Stream = require('stream').Stream();
-        
-        //// build a custom stream to grep even lines from input
-        //var grepEven = new Stream();
-        //grepEven.writable = true;
-        //grepEven.readable = true;
-        
-        //var data = '';
-        //grepEven.write = function (buf) { data += buf };
-        //grepEven.end = function () {
-        //    this.emit('data', data
-        //        .split('\n')
-        //        .map(function (line) { return line + '\n' })
-        //        .filter(function (line) { return line.match(/even/) })
-        //        .join('')
-        //    );
-        //    this.emit('end');
-        //    res.end(data);
-        //};
-        
         
         console.log('mkdir __keeplocal');
-        procstreams('mkdir __keeplocal', null, { cwd: target.path });//.pipe(process.stdout);
+        var cmd = procstreams('mkdir __keeplocal', null, { cwd: target.path });
         
         keeplocal.forEach(function (file, index) {
             console.log('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index);
-            procstreams('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });//.pipe(process.stdout);
+            cmd = cmd.then('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index, null, { cwd: target.path });
         });
         
         console.log('git reset --hard HEAD');
-        procstreams('git reset --hard HEAD', null, { cwd: target.path });//.pipe(process.stdout);
+        cmd = cmd.then('git reset --hard HEAD', null, { cwd: target.path });
         
         console.log('git pull');
-        procstreams('git pull', null, { cwd: target.path }).pipe(res);
+        cmd = cmd.then('git pull', null, { cwd: target.path });
         
         //keeplocal.forEach(function (file, index) {
         //    console.log('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
@@ -96,14 +76,16 @@ config.targets.forEach(function (target) {
         //});
         
         console.log('rm -rf ' + __dirname + '/__keeplocal');
-        procstreams('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });//.pipe(process.stdout);
+        cmd = cmd.then('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });
         
-        //cmd.data(function (err, stdout, stderr) {
-        //    log += (log == ''?'':'\n') + stdout;
-        //    console.log(stdout); // prints number of lines in the file lines.txt
-        //}).on('exit', function () {
-        //    res.end(log);
-        //});;
+        cmd.data(function (err, stdout, stderr) {
+            log += (log == ''?'':'\n') + stdout;
+            console.log("err:" + err);
+            console.log("stdout:" + stdout); // prints number of lines in the file lines.txt
+            console.log("stderr:" + stderr);
+        }).on('exit', function () {
+            res.end(log);
+        });;
     });
 });
 http.createServer(express).listen(config.port, function () {
