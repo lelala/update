@@ -39,7 +39,7 @@ config.targets.forEach(function (target) {
         //        process.stdout.write('\n');
         //    }
         //});
-
+        
         //git.stdout.on('data', function (data) {
         //    log += (log == '`'?'':'\n`') + data;
         //    console.log(data);
@@ -56,15 +56,15 @@ config.targets.forEach(function (target) {
         var cmd = procstreams('mkdir __keeplocal', null, { cwd: target.path });
         
         keeplocal.forEach(function (file, index) {
-            cmd = cmd.then('/bin/cp '+file+' __keeplocal/'+index);
+            cmd = cmd.then('/bin/cp ' + file + ' ' + __dirname + '/__keeplocal/' + index);
         });
         
         cmd = cmd.then('git reset --hard HEAD');
         
         cmd = cmd.then('git pull');
-
+        
         keeplocal.forEach(function (file, index) {
-            cmd = cmd.then('/bin/cp --f __keeplocal/' + index + ' ' + file );
+            cmd = cmd.then('/bin/cp --f ' + __dirname + '/__keeplocal/' + index + ' ' + file);
         });
         
         cmd = cmd.then('rmdir __keeplocal');
