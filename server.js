@@ -91,7 +91,7 @@ config.targets.forEach(function (target) {
         command('git pull', null, { cwd: target.path });
         var path = require('path');
         keeplocal.forEach(function (file, index) {
-            command('rm' + path.join(target.path, file));
+            command('rm -f' + path.join(target.path, file));
             command('mv' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
         });
         cmdstream.on('exit', function () {
