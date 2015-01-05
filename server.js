@@ -51,29 +51,26 @@ config.targets.forEach(function (target) {
         //    res.end(log);
         //});
         //return;
-        var log = '';
+        var log = 'update ' + target.name + ":";
+        var opt = { cwd: target.path };
+        log += "\n\toptions:" + opt + "\n";
         var keeplocal = [].concat(target.keeplocal || []);
         
         var cmdstream = null;
-        function command(cmd, args, options) {
-            var opt = JSON.stringify(options);
+        function command(cmd) {
             if (cmdstream == null)
-                cmdstream = procstreams(cmd, args, options);
+                cmdstream = procstreams(cmd, null, opt);
             else
-                cmdstream = cmdstream.and(cmd, args, options);
+                cmdstream = cmdstream.and(cmd, null, opt);
             
             cmdstream.data(function (err, stdout, stderr) {
-                log += (log == ''?'':'\n') + cmd + '\n';
-                if (args)
-                    log += "\targs:" + JSON.stringify(args) + "\n";
-                if (opt)
-                    log += "\toptions:" + opt + "\n";
+                log += '\n' + cmd;
                 if (err)
-                    log += "!" + JSON.stringify(err) + "\n";
+                    log += "\n!" + JSON.stringify(err) + "\n";
                 if (stdout)
-                    log += ">" + (stdout || "\n");
+                    log += "\n>" + (stdout || "\n");
                 if (!stdout && !err) {
-                    log += ">no result.\n";
+                    log += "\n>no result.\n";
                 }
                 
                 console.log(cmd);
@@ -83,17 +80,16 @@ config.targets.forEach(function (target) {
             })
         }
         
-        command('rm -rf ' + __dirname + '/__keeplocal', null, { cwd: target.path });
-        command('mkdir ' + __dirname + '/__keeplocal', null, { cwd: target.path });
+        command('rm -rf ' + __dirname + '/__keeplocal');
+        command('mkdir ' + __dirname + '/__keeplocal');
         keeplocal.forEach(function (file, index) {
-            command('/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/l' + index + '.l', null, { cwd: target.path });
+            command('/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/l' + index + '.l');
         });
-        command('git reset --hard HEAD', null, { cwd: target.path });
+        command('git reset --hard HEAD');
         
-        command('git pull', null, { cwd: target.path });
-        //var path = require('path');
+        command('git pull');
         keeplocal.forEach(function (file, index) {
-            command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l', null, { cwd: target.path });
+            command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l');
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
         cmdstream.on('exit', function () {
