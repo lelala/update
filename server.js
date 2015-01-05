@@ -23,20 +23,20 @@ config.targets.forEach(function (target) {
                 if (err)
                     log += "\n!" + JSON.stringify(err) + "\n";
                 if (stderr)
-                    log += "\n!" + JSON.stringify(stderr) + "\n";
+                    log += "\n!" + stderr + "\n";
                 if (stdout)
                     log += "\n>" + (stdout || "\n");
-                if (!stdout && !err) {
+                if (!stdout && !err && !stderr) {
                     log += "\n>no result.\n";
                 }
                 
                 console.log(cmd);
                 if (err)
-                    console.log("!" + err);
+                    console.log("!" + JSON.stringify(err));
                 if (stderr)
                     console.log("!" + stderr);
                 console.log(">" + stdout); // prints number of lines in the file lines.txt
-
+                
                 if (err || stderr) {
                     setTimeout(function () {
                         res.end(log);
