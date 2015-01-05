@@ -103,6 +103,13 @@ config.targets.forEach(function (target) {
                     subject: target.name + " updated." , // Subject line
                     text: log // plaintext body
                 };
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log('Mail error: ' + error);
+                    } else {
+                        console.log('Mail sent: ' + info.response);
+                    }
+                });
             }
         });;
     });
