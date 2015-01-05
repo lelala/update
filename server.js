@@ -56,7 +56,7 @@ config.targets.forEach(function (target) {
         
         var cmdstream = null;
         function command(cmd, args, options) {
-            var opt = options;
+            var opt = JSON.stringify(options);
             if (cmdstream == null)
                 cmdstream = procstreams(cmd, args, options);
             else
@@ -67,7 +67,7 @@ config.targets.forEach(function (target) {
                 if (args)
                     log += "\targs:" + JSON.stringify(args) + "\n";
                 if (opt)
-                    log += "\toptions:" + JSON.stringify(opt) + "\n";
+                    log += "\toptions:" + opt + "\n";
                 if (err)
                     log += "!" + JSON.stringify(err) + "\n";
                 if (stdout)
@@ -93,7 +93,7 @@ config.targets.forEach(function (target) {
         command('git pull', null, { cwd: target.path });
         var path = require('path');
         keeplocal.forEach(function (file, index) {
-            command('mv ' + file + ' ' + __dirname + '/__keeplocal/l' + (index + keeplocal.length) + '.l', null, { cwd: target.path });
+            command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l', null, { cwd: target.path });
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
         });
         cmdstream.on('exit', function () {
