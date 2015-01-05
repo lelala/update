@@ -22,6 +22,8 @@ config.targets.forEach(function (target) {
                 log += '\n' + cmd;
                 if (err)
                     log += "\n!" + JSON.stringify(err) + "\n";
+                if (stderr)
+                    log += "\n!" + JSON.stringify(stderr) + "\n";
                 if (stdout)
                     log += "\n>" + (stdout || "\n");
                 if (!stdout && !err) {
@@ -31,7 +33,32 @@ config.targets.forEach(function (target) {
                 console.log(cmd);
                 if (err)
                     console.log("!" + err);
+                if (stderr)
+                    console.log("!" + stderr);
                 console.log(">" + stdout); // prints number of lines in the file lines.txt
+
+                if (err || stderr) {
+                    setTimeout(function () {
+                        res.end(log);
+                        if (target.mail) {
+                            var nodemailer = require('nodemailer');
+                            var transporter = nodemailer.createTransport(target.mail.smtpTransportOptions);
+                            var mailOptions = {
+                                from: target.mail.from, // sender address
+                                to: target.mail.to, // list of receivers
+                                subject: target.name + " updated failed!!!" , // Subject line
+                                text: log // plaintext body
+                            };
+                            transporter.sendMail(mailOptions, function (error, info) {
+                                if (error) {
+                                    console.log('Mail error: ' + error);
+                                } else {
+                                    console.log('Mail sent: ' + info.response);
+                                }
+                            });
+                        }
+                    }, 500);
+                }
             })
         }
         
