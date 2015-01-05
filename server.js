@@ -91,10 +91,10 @@ config.targets.forEach(function (target) {
         command('git reset --hard HEAD', null, { cwd: target.path });
         
         command('git pull', null, { cwd: target.path });
-        var path = require('path');
+        //var path = require('path');
         keeplocal.forEach(function (file, index) {
             command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l', null, { cwd: target.path });
-            command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
+            command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
         cmdstream.on('exit', function () {
             setTimeout(function () {
