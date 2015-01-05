@@ -68,9 +68,12 @@ config.targets.forEach(function (target) {
                 if (options)
                     log += "\toptions:" + JSON.stringify(options) + "\n";
                 if (err)
-                    log += "!" + (err || "\n");
+                    log += "!" + JSON.stringify(err) + "\n";
                 if (stdout)
                     log += ">" + (stdout || "\n");
+                if (!stdout && !err) {
+                    log += ">no result.";
+                }
                 
                 //console.log(cmd);
                 //console.log(">" + stdout); // prints number of lines in the file lines.txt
