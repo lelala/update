@@ -54,14 +54,14 @@ config.targets.forEach(function (target) {
         var log = '';
         var keeplocal = [].concat(target.keeplocal || []);
         
-        var cmd = null;
+        var cmdstream = null;
         function command(cmd, args, options) {
-            if (cmd == null)
-                cmd = procstreams(cmd, args, options);
+            if (cmdstream == null)
+                cmdstream = procstreams(cmd, args, options);
             else
-                cmd = cmd.and(cmd, args, options);
+                cmdstream = cmd.and(cmd, args, options);
             
-            cmd.data(function (err, stdout, stderr) {
+            cmdstream.data(function (err, stdout, stderr) {
                 log += (log == ''?'':'\n') + cmd + '\n';
                 if (args)
                     log += "\targs:" + JSON.stringify(args) + "\n";
