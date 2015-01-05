@@ -76,8 +76,10 @@ config.targets.forEach(function (target) {
                     log += ">no result.\n";
                 }
                 
-                //console.log(cmd);
-                //console.log(">" + stdout); // prints number of lines in the file lines.txt
+                console.log(cmd);
+                if (err)
+                    console.log("!" + err);
+                console.log(">" + stdout); // prints number of lines in the file lines.txt
             })
         }
         
@@ -91,7 +93,7 @@ config.targets.forEach(function (target) {
         command('git pull', null, { cwd: target.path });
         var path = require('path');
         keeplocal.forEach(function (file, index) {
-            command('rm -f' + path.join(target.path, file));
+            command('mv' + file + ' ' + __dirname + '/__keeplocal/l' + (index + keeplocal.length) + '.l', null, { cwd: target.path });
             command('mv' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
         });
         cmdstream.on('exit', function () {
