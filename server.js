@@ -100,7 +100,7 @@ config.targets.forEach(function (target) {
                 var mailOptions = {
                     from: target.mail.from, // sender address
                     to: target.mail.to, // list of receivers
-                    subject: "Update " + target.name+" "+, // Subject line
+                    subject: target.name + " updated." , // Subject line
                     text: log // plaintext body
                 };
             }
