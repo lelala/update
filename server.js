@@ -89,7 +89,7 @@ config.targets.forEach(function (target) {
         keeplocal.forEach(function (file, index) {
             command('sudo /bin/mv -f' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
         });
-        cmd.on('exit', function () {
+        cmdstream.on('exit', function () {
             setTimeout(function () {
                 res.end(log);
             }, 200);
