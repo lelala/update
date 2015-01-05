@@ -59,7 +59,7 @@ config.targets.forEach(function (target) {
             if (cmdstream == null)
                 cmdstream = procstreams(cmd, args, options);
             else
-                cmdstream = cmd.and(cmd, args, options);
+                cmdstream = cmdstream.and(cmd, args, options);
             
             cmdstream.data(function (err, stdout, stderr) {
                 log += (log == ''?'':'\n') + cmd + '\n';
