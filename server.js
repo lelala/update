@@ -56,6 +56,7 @@ config.targets.forEach(function (target) {
         
         var cmdstream = null;
         function command(cmd, args, options) {
+            var opt = options;
             if (cmdstream == null)
                 cmdstream = procstreams(cmd, args, options);
             else
@@ -65,14 +66,14 @@ config.targets.forEach(function (target) {
                 log += (log == ''?'':'\n') + cmd + '\n';
                 if (args)
                     log += "\targs:" + JSON.stringify(args) + "\n";
-                if (options)
-                    log += "\toptions:" + JSON.stringify(options) + "\n";
+                if (opt)
+                    log += "\toptions:" + JSON.stringify(opt) + "\n";
                 if (err)
                     log += "!" + JSON.stringify(err) + "\n";
                 if (stdout)
                     log += ">" + (stdout || "\n");
                 if (!stdout && !err) {
-                    log += ">no result.";
+                    log += ">no result.\n";
                 }
                 
                 //console.log(cmd);
@@ -90,7 +91,8 @@ config.targets.forEach(function (target) {
         command('git pull', null, { cwd: target.path });
         var path = require('path');
         keeplocal.forEach(function (file, index) {
-            command('sudo /bin/mv -f' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
+            command('rm' + path.join(target.path, file));
+            command('mv' + __dirname + '/__keeplocal/l' + index + '.l ' + path.join(target.path, file));
         });
         cmdstream.on('exit', function () {
             setTimeout(function () {
