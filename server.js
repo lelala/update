@@ -94,24 +94,26 @@ config.targets.forEach(function (target) {
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
         cmdstream.on('exit', function () {
-            res.end(log);
-            if (target.mail) {
-                var nodemailer = require('nodemailer');
-                var transporter = nodemailer.createTransport(target.mail.smtpTransportOptions);
-                var mailOptions = {
-                    from: target.mail.from, // sender address
-                    to: target.mail.to, // list of receivers
-                    subject: target.name + " updated." , // Subject line
-                    text: log // plaintext body
-                };
-                transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                        console.log('Mail error: ' + error);
-                    } else {
-                        console.log('Mail sent: ' + info.response);
-                    }
-                });
-            }
+            setTimeout(function () {
+                res.end(log);
+                if (target.mail) {
+                    var nodemailer = require('nodemailer');
+                    var transporter = nodemailer.createTransport(target.mail.smtpTransportOptions);
+                    var mailOptions = {
+                        from: target.mail.from, // sender address
+                        to: target.mail.to, // list of receivers
+                        subject: target.name + " updated." , // Subject line
+                        text: log // plaintext body
+                    };
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            console.log('Mail error: ' + error);
+                        } else {
+                            console.log('Mail sent: ' + info.response);
+                        }
+                    });
+                }
+            }, 500);
         });;
     });
 });
