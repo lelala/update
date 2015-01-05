@@ -51,9 +51,10 @@ config.targets.forEach(function (target) {
         //    res.end(log);
         //});
         //return;
-        var log = 'Update ' + target.name + "[" + new Date().toLocaleString() + "]:";
+        var log = 'Update ' + target.name + ":";
         var opt = { cwd: target.path };
-        log += "\n\toptions:" + JSON.stringify(opt) + "\n";
+        log += "\n\tat: " + new Date().toLocaleString();
+        log += "\n\toptions: " + JSON.stringify(opt) + "\n";
         var keeplocal = [].concat(target.keeplocal || []);
         
         var cmdstream = null;
