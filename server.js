@@ -51,9 +51,9 @@ config.targets.forEach(function (target) {
         //    res.end(log);
         //});
         //return;
-        var log = 'update ' + target.name + ":";
+        var log = 'Update ' + target.name + "[" + new Date().toLocaleString() + "]:";
         var opt = { cwd: target.path };
-        log += "\n\toptions:" + opt + "\n";
+        log += "\n\toptions:" + JSON.stringify(opt) + "\n";
         var keeplocal = [].concat(target.keeplocal || []);
         
         var cmdstream = null;
@@ -93,9 +93,17 @@ config.targets.forEach(function (target) {
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
         cmdstream.on('exit', function () {
-            setTimeout(function () {
-                res.end(log);
-            }, 200);
+            res.end(log);
+            if (target.mail) {
+                var nodemailer = require('nodemailer');
+                var transporter = nodemailer.createTransport(target.mail.smtpTransportOptions);
+                var mailOptions = {
+                    from: target.mail.from, // sender address
+                    to: target.mail.to, // list of receivers
+                    subject: "Update " + target.name+" "+, // Subject line
+                    text: log // plaintext body
+                };
+            }
         });;
     });
 });
