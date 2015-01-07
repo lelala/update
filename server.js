@@ -69,7 +69,7 @@ config.targets.forEach(function (target) {
         });
         command('git reset --hard HEAD');
         
-        command('git checkout');
+        command('git pull');
         keeplocal.forEach(function (file, index) {
             command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l');
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
