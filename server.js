@@ -92,12 +92,12 @@ config.targets.forEach(function (target) {
                 return (n < 10 ? '0' : '') + n;
             }
             var time = new Date();
-            return time.getFullYear() + "."
-            pad2(time.getMonth() + 1) + "."
-            pad2(time.getDate()) + "."
-            pad2(time.getHours()) + "."
-            pad2(time.getMinutes()) + "."
-            pad2(time.getSeconds());
+            return time.getFullYear() + "." +
+                pad2(time.getMonth() + 1) + "." +
+                pad2(time.getDate()) + "." +
+                pad2(time.getHours()) + "." +
+                pad2(time.getMinutes()) + "." +
+                pad2(time.getSeconds());
         })();
         command("git tag -a '" + depleyTime + "'");
         
