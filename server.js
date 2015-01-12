@@ -4,7 +4,8 @@ var express = require('express')();
 var config = require('./config.json');
 
 config.targets.forEach(function (target) {
-    express.get('/' + target.name, function (req, res) {
+    var run = function (req, res) {
+        var version = req.params.version;
         var log = 'Update ' + target.name + ":";
         var opt = { cwd: target.path };
         log += "\n    at: " + new Date().toLocaleString();
@@ -62,14 +63,30 @@ config.targets.forEach(function (target) {
             })
         }
         
+        command('git fetch');
+        
+        if (version) {
+            command('git show ' + version);
+        }
+        
         command('rm -rf ' + __dirname + '/__keeplocal');
         command('mkdir ' + __dirname + '/__keeplocal');
         keeplocal.forEach(function (file, index) {
             command('/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/l' + index + '.l');
         });
-        command('git reset --hard HEAD');
+        //command('git reset --hard HEAD');
         
-        command('git pull');
+        if (version) {
+            command('git checkout -f ' + version);
+        }
+        else
+            command('git checkout -f');
+        
+        var depleyTime = (new Date()).toLocaleString();
+        command("git tag -a " + depleyTime);
+        
+        command('git push --tags');
+        
         keeplocal.forEach(function (file, index) {
             command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l');
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
@@ -95,8 +112,11 @@ config.targets.forEach(function (target) {
                     });
                 }
             }, 500);
-        });;
-    });
+        });
+    };
+    
+    express.get('/' + target.name, run);
+    express.get('/' + target.name + '/v/:version', run);
 });
 http.createServer(express).listen(config.port, function () {
     console.log('Express server listening on port ' + config.port);
