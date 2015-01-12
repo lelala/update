@@ -13,6 +13,7 @@ config.targets.forEach(function (target) {
         var keeplocal = [].concat(target.keeplocal || []);
         
         var cmdstream = null;
+        var haserr = false;
         function command(cmd) {
             if (cmdstream == null)
                 cmdstream = procstreams(cmd, null, opt);
@@ -39,6 +40,7 @@ config.targets.forEach(function (target) {
                 console.log(">" + stdout); // prints number of lines in the file lines.txt
                 
                 if (err || stderr) {
+                    haserr = true;
                     setTimeout(function () {
                         res.end(log);
                         if (target.mail) {
@@ -58,7 +60,7 @@ config.targets.forEach(function (target) {
                                 }
                             });
                         }
-                    }, 500);
+                    }, 5000);
                 }
             })
         }
@@ -87,47 +89,57 @@ config.targets.forEach(function (target) {
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
         
-        var depleyTime = (function () {
-            function pad2(n) {  // always returns a string
-                return (n < 10 ? '0' : '') + n;
-            }
+        function pad2(n) {  // always returns a string
+            return (n < 10 ? '0' : '') + n;
+        }
+        if (target.writeTag) {
             var time = new Date();
-            return time.getFullYear() + "." +
+            var deployT = time.getFullYear() + "." +
                 pad2(time.getMonth() + 1) + "." +
                 pad2(time.getDate()) + "." +
                 pad2(time.getHours()) + "." +
                 pad2(time.getMinutes()) + "." +
                 pad2(time.getSeconds());
-        })();
-        command("git tag -a '" + depleyTime + "'");
-        
-        command('git push --tags');
-        
+            var deployM = time.getFullYear() + "/" +
+                pad2(time.getMonth() + 1) + "/" +
+                pad2(time.getDate()) + " " +
+                pad2(time.getHours()) + ":" +
+                pad2(time.getMinutes()) + ":" +
+                pad2(time.getSeconds());
+            command("git tag -a " + deployT + " -m'" + deployM + "'");
+            command('sudo git push --tags');
+        }
         cmdstream.on('exit', function () {
             setTimeout(function () {
-                res.end(log);
-                if (target.mail) {
-                    var nodemailer = require('nodemailer');
-                    var transporter = nodemailer.createTransport(target.mail.smtpTransportOptions);
-                    var mailOptions = {
-                        from: target.mail.from, // sender address
-                        to: target.mail.to, // list of receivers
-                        subject: target.name + " updated." , // Subject line
-                        text: log // plaintext body
-                    };
-                    transporter.sendMail(mailOptions, function (error, info) {
-                        if (error) {
-                            console.log('Mail error: ' + error);
-                        } else {
-                            console.log('Mail sent: ' + info.response);
-                        }
-                    });
+                if (!haserr) {
+                    res.end(log);
+                    if (target.mail) {
+                        var nodemailer = require('nodemailer');
+                        var transporter = nodemailer.createTransport(target.mail.smtpTransportOptions);
+                        var mailOptions = {
+                            from: target.mail.from, // sender address
+                            to: target.mail.to, // list of receivers
+                            subject: target.name + " updated." , // Subject line
+                            text: log // plaintext body
+                        };
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                console.log('Mail error: ' + error);
+                            } else {
+                                console.log('Mail sent: ' + info.response);
+                            }
+                        });
+                    }
                 }
-            }, 500);
+            }, 5000);
         });
     };
-    
-    express.get('/' + target.name, run);
+    if (target.requireVersion) {
+
+    }
+    else {
+        express.get('/' + target.name, run);
+    }
     express.get('/' + target.name + '/v/:version', run);
 });
 http.createServer(express).listen(config.port, function () {
