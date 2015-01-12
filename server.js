@@ -83,7 +83,7 @@ config.targets.forEach(function (target) {
             command('git checkout -f');
         
         var depleyTime = (new Date()).toLocaleString();
-        command("git tag -a " + depleyTime);
+        command("git tag -a '" + depleyTime + "'");
         
         command('git push --tags');
         
