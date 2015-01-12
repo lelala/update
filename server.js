@@ -98,7 +98,7 @@ config.targets.forEach(function (target) {
             pad2(time.getHours()) + "."
             pad2(time.getMinutes()) + "."
             pad2(time.getSeconds());
-        });
+        })();
         command("git tag -a '" + depleyTime + "'");
         
         command('git push --tags');
