@@ -82,15 +82,27 @@ config.targets.forEach(function (target) {
         else
             command('git checkout -f');
         
-        var depleyTime = (new Date()).toLocaleString();
-        command("git tag -a '" + depleyTime + "'");
-        
-        command('git push --tags');
-        
         keeplocal.forEach(function (file, index) {
             command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l');
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
+        
+        var depleyTime = (function () {
+            function pad2(n) {  // always returns a string
+                return (n < 10 ? '0' : '') + n;
+            }
+            var time = new Date();
+            return time.getFullYear() + "."
+            pad2(time.getMonth() + 1) + "."
+            pad2(time.getDate()) + "."
+            pad2(time.getHours()) + "."
+            pad2(time.getMinutes()) + "."
+            pad2(time.getSeconds());
+        });
+        command("git tag -a '" + depleyTime + "'");
+        
+        command('git push --tags');
+        
         cmdstream.on('exit', function () {
             setTimeout(function () {
                 res.end(log);
