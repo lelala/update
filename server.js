@@ -87,20 +87,23 @@ config.targets.forEach(function (target) {
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
         
-        var depleyTime = (function () {
-            function pad2(n) {  // always returns a string
-                return (n < 10 ? '0' : '') + n;
-            }
-            var time = new Date();
-            return time.getFullYear() + "." +
+        function pad2(n) {  // always returns a string
+            return (n < 10 ? '0' : '') + n;
+        }
+        var time = new Date();
+        var deployT = time.getFullYear() + "." +
                 pad2(time.getMonth() + 1) + "." +
                 pad2(time.getDate()) + "." +
                 pad2(time.getHours()) + "." +
                 pad2(time.getMinutes()) + "." +
                 pad2(time.getSeconds());
-        })();
-        command("git tag -a '" + depleyTime + "'");
-        
+        var deployM = time.getFullYear() + "/" +
+                pad2(time.getMonth() + 1) + "/" +
+                pad2(time.getDate()) + " " +
+                pad2(time.getHours()) + ":" +
+                pad2(time.getMinutes()) + ":" +
+                pad2(time.getSeconds());
+        command("git tag -a " + deployT + " -m'" + deployM + "'");
         command('git push --tags');
         
         cmdstream.on('exit', function () {
