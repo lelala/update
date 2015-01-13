@@ -92,23 +92,38 @@ config.targets.forEach(function (target) {
         function pad2(n) {  // always returns a string
             return (n < 10 ? '0' : '') + n;
         }
+<<<<<<< HEAD
         if (target.writeTag) {
             var time = new Date();
             var deployT = time.getFullYear() + "." +
+=======
+        var time = new Date();
+        var deployT = time.getFullYear() + "." +
+>>>>>>> 7b3a189b96a959166b5667f5a657f2f52446dbc1
                 pad2(time.getMonth() + 1) + "." +
                 pad2(time.getDate()) + "." +
                 pad2(time.getHours()) + "." +
                 pad2(time.getMinutes()) + "." +
                 pad2(time.getSeconds());
+<<<<<<< HEAD
             var deployM = time.getFullYear() + "/" +
+=======
+        var deployM = time.getFullYear() + "/" +
+>>>>>>> 7b3a189b96a959166b5667f5a657f2f52446dbc1
                 pad2(time.getMonth() + 1) + "/" +
                 pad2(time.getDate()) + " " +
                 pad2(time.getHours()) + ":" +
                 pad2(time.getMinutes()) + ":" +
                 pad2(time.getSeconds());
+<<<<<<< HEAD
             command("git tag -a " + deployT + " -m'" + deployM + "'");
             command('sudo git push --tags');
         }
+=======
+        command("git tag -a " + deployT + " -m'" + deployM + "'");
+        command('git push --tags');
+        
+>>>>>>> 7b3a189b96a959166b5667f5a657f2f52446dbc1
         cmdstream.on('exit', function () {
             setTimeout(function () {
                 if (!haserr) {
