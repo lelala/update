@@ -23,14 +23,15 @@ config.targets.forEach(function (target) {
             cmdstream.data(function (err, stdout, stderr) {
                 log += '\n' + cmd;
                 if (err)
-                    log += "\n!" + JSON.stringify(err) + "\n";
+                    log += "\n!" + JSON.stringify(err) + "";
                 if (stderr)
-                    log += "\n!" + stderr + "\n";
+                    log += "\n!" + stderr + "";
                 if (stdout)
-                    log += "\n>" + (stdout || "\n");
+                    log += "\n>" + (stdout || "");
                 if (!stdout && !err && !stderr) {
-                    log += "\n>no result.\n";
+                    log += "\n>no result.";
                 }
+				log += "\n";
                 
                 console.log(cmd);
                 if (err)
@@ -107,10 +108,8 @@ config.targets.forEach(function (target) {
                 pad2(time.getMinutes()) + ":" +
                 pad2(time.getSeconds());
             command("git tag -a " + deployT + " -m'" + deployM + "'");
-            command('sudo git push --tags');
+            command('git push --tags');
         }
-        command("git tag -a " + deployT + " -m'" + deployM + "'");
-        command('git push --tags');
         
         cmdstream.on('exit', function () {
             setTimeout(function () {
