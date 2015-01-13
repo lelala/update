@@ -110,7 +110,7 @@ config.targets.forEach(function (target) {
             command('sudo git push --tags');
         }
         command("git tag -a " + deployT + " -m'" + deployM + "'");
-        command('sudo git push --tags');
+        command('git push --tags');
         
         cmdstream.on('exit', function () {
             setTimeout(function () {
