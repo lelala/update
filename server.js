@@ -9,35 +9,43 @@ config.targets.forEach(function (target) {
         var log = 'Update ' + target.name + ":";
         var opt = { cwd: target.path };
         log += "\n    at: " + new Date().toLocaleString();
-        log += "\n    options: " + JSON.stringify(opt) + "\n";
+        log += "\n    options: " + JSON.stringify(opt);
         var keeplocal = [].concat(target.keeplocal || []);
+        if (keeplocal.length > 0)
+            log += "\n    keeplocal: " + JSON.stringify(keeplocal);
+        log += "\n";
         
         var cmdstream = null;
         var haserr = false;
-        function command(cmd) {
+        function command(cmd, logresult) {
+            if (logresult !== false)
+                logresult = true;
             if (cmdstream == null)
                 cmdstream = procstreams(cmd, null, opt);
             else
                 cmdstream = cmdstream.and(cmd, null, opt);
             
             cmdstream.data(function (err, stdout, stderr) {
-                log += '\n' + cmd;
-                if (err)
-                    log += "\n!" + JSON.stringify(err) + "";
-                if (stderr)
-                    log += "\n*" + stderr + "";
-                if (stdout)
-                    log += "\n>" + (stdout || "");
-                if (!stdout && !err && !stderr) {
-                    log += "\n>no result.";
+                if (logresult) {
+                    log += '\n' + cmd;
+                    if (err)
+                        log += "\n!" + JSON.stringify(err) + "";
+                    if (stderr)
+                        log += "\n*" + stderr + "";
+                    if (stdout)
+                        log += "\n>" + (stdout || "");
+                    if (!stdout && !err && !stderr) {
+                        log += "\n>no result.";
+                    }
+                    if (!log.match(/\n$/))
+                        log += "\n";
                 }
-                log += "\n";
                 
                 console.log(cmd);
                 if (err)
                     console.log("!" + JSON.stringify(err));
                 if (stderr)
-                    console.log("!" + stderr);
+                    console.log("*" + stderr);
                 console.log(">" + stdout); // prints number of lines in the file lines.txt
                 
                 if (err) {
@@ -65,21 +73,16 @@ config.targets.forEach(function (target) {
                 }
             })
         }
-        
-        command('git fetch');
-        
-        if (version) {
-            command('git show ' + version);
-        }
-        
         command('rm -rf ' + __dirname + '/__keeplocal');
         command('mkdir ' + __dirname + '/__keeplocal');
         keeplocal.forEach(function (file, index) {
             command('/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/l' + index + '.l');
         });
-        //command('git reset --hard HEAD');
+        
+        command('git fetch');
         
         if (version) {
+            command('git show ' + version);
             command('git checkout -f ' + version);
         }
         else
@@ -90,10 +93,15 @@ config.targets.forEach(function (target) {
             command('mv ' + __dirname + '/__keeplocal/l' + index + '.l ' + file);
         });
         
-        function pad2(n) {  // always returns a string
-            return (n < 10 ? '0' : '') + n;
-        }
         if (target.writeTag) {
+            
+            function pad2(n) {  // always returns a string
+                return (n < 10 ? '0' : '') + n;
+            }
+            function pad3(n) {  // always returns a string
+                return (n < 10 ? '00' : (n < 100 ? '0' : '')) + n;
+            }
+            
             var time = new Date();
             var deployT = time.getFullYear() + "." +
                 pad2(time.getMonth() + 1) + "." +
@@ -101,15 +109,15 @@ config.targets.forEach(function (target) {
                 pad2(time.getHours()) + "." +
                 pad2(time.getMinutes()) + "." +
                 pad2(time.getSeconds()) + "." +
-                time.getMilliseconds();
+                pad3(time.getMilliseconds());
             var deployM = time.getFullYear() + "/" +
                 pad2(time.getMonth() + 1) + "/" +
                 pad2(time.getDate()) + " " +
                 pad2(time.getHours()) + ":" +
                 pad2(time.getMinutes()) + ":" +
                 pad2(time.getSeconds());
-            cmdstream = cmdstream.and("git tag -a " + deployT + " -m'" + deployM + "'", null, opt);
-            cmdstream = cmdstream.and('git push --tags', null, opt);
+            command("git tag -a " + deployT + " -m'" + deployM + "'", false);
+            command('git push --tags', false);
         }
         
         cmdstream.on('exit', function () {
@@ -134,7 +142,7 @@ config.targets.forEach(function (target) {
                         });
                     }
                 }
-            }, 800);
+            }, 1000);
         });
     };
     if (target.requireVersion) {
