@@ -1,4 +1,4 @@
-﻿var procstreams = require('procstreams'); 
+﻿var procstreams = require('procstreams');
 var http = require('http');
 var express = require('express')();
 var config = require('./config.json');
@@ -25,13 +25,13 @@ config.targets.forEach(function (target) {
                 if (err)
                     log += "\n!" + JSON.stringify(err) + "";
                 if (stderr)
-                    log += "\n!" + stderr + "";
+                    log += "\n*" + stderr + "";
                 if (stdout)
                     log += "\n>" + (stdout || "");
                 if (!stdout && !err && !stderr) {
                     log += "\n>no result.";
                 }
-				log += "\n";
+                log += "\n";
                 
                 console.log(cmd);
                 if (err)
@@ -40,7 +40,7 @@ config.targets.forEach(function (target) {
                     console.log("!" + stderr);
                 console.log(">" + stdout); // prints number of lines in the file lines.txt
                 
-                if (err || stderr) {
+                if (err) {
                     haserr = true;
                     setTimeout(function () {
                         res.end(log);
@@ -61,7 +61,7 @@ config.targets.forEach(function (target) {
                                 }
                             });
                         }
-                    }, 5000);
+                    }, 800);
                 }
             })
         }
@@ -97,18 +97,19 @@ config.targets.forEach(function (target) {
             var time = new Date();
             var deployT = time.getFullYear() + "." +
                 pad2(time.getMonth() + 1) + "." +
-                pad2(time.getDate()) + "." +
+                pad2(time.getDate()) + "-" +
                 pad2(time.getHours()) + "." +
                 pad2(time.getMinutes()) + "." +
-                pad2(time.getSeconds());
+                pad2(time.getSeconds()) + "." +
+                time.getMilliseconds();
             var deployM = time.getFullYear() + "/" +
                 pad2(time.getMonth() + 1) + "/" +
                 pad2(time.getDate()) + " " +
                 pad2(time.getHours()) + ":" +
                 pad2(time.getMinutes()) + ":" +
                 pad2(time.getSeconds());
-            command("git tag -a " + deployT + " -m'" + deployM + "'");
-            command('git push --tags');
+            cmdstream = cmdstream.and("git tag -a " + deployT + " -m'" + deployM + "'", null, opt);
+            cmdstream = cmdstream.and('git push --tags', null, opt);
         }
         
         cmdstream.on('exit', function () {
@@ -133,7 +134,7 @@ config.targets.forEach(function (target) {
                         });
                     }
                 }
-            }, 5000);
+            }, 800);
         });
     };
     if (target.requireVersion) {
