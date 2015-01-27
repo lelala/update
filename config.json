@@ -16,7 +16,10 @@
                 },
                 "from": "sender@address",
                 "to": "receiver@address"
-            }
+            },
+            "finalCommand": "",
+            "writeTag": true,
+            "requireVersion": true
         }
     ]
 }

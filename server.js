@@ -21,6 +21,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 config.targets.forEach(function (target) {
     var run = function (req, res) {
         var version = req.body.version;
+        
+        
+        var isEMPTY = /^\s*$/i;
+        if (isEMPTY.test(version))) {
+            res.end("version number is required.");
+            return;
+        }
+
+        var isHEAD = /^\s*head\s*$/i;
+        if (target.requireVersion && (isHEAD.test(version))) {
+            res.end("version number is required.");
+            return;
+        }
+        
         var log = 'Update ' + target.name + ":";
         var opt = { cwd: target.path };
         log += "\n    at: " + new Date().toLocaleString();
@@ -134,7 +148,9 @@ config.targets.forEach(function (target) {
             command("git tag -a " + deployT + " -m'" + deployM + "'", false);
             command('git push --tags', false);
         }
-        
+        if (target.finalCommand) {
+            command(target.finalCommand, false);
+        }
         cmdstream.on('exit', function () {
             setTimeout(function () {
                 if (!haserr) {
