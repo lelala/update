@@ -148,9 +148,6 @@ config.targets.forEach(function (target) {
             command("git tag -a " + deployT + " -m'" + deployM + "'", false);
             command('git push --tags', false);
         }
-        if (target.finalCommand) {
-            command(target.finalCommand, false);
-        }
         cmdstream.on('exit', function () {
             setTimeout(function () {
                 if (!haserr) {
@@ -170,7 +167,16 @@ config.targets.forEach(function (target) {
                             } else {
                                 console.log('Mail sent: ' + info.response);
                             }
+                            if (target.finalCommand) {
+                                console.log('finalCommand: ' + target.finalCommand);
+                                command(target.finalCommand, false);
+                            }
                         });
+                    } else {   
+                        if (target.finalCommand) {
+                            console.log('finalCommand: ' + target.finalCommand);
+                            command(target.finalCommand, false);
+                        }
                     }
                 }
             }, 1000);
