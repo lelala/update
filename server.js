@@ -178,7 +178,7 @@ config.targets.forEach(function (target) {
     };
     app.post('/' + target.name, run);
     app.get('/' + target.name, function (req, res) {
-        res.render('root');
+        res.render('root', { name: target.name });
     });
 });
 http.createServer(app).listen(config.port, function () {
