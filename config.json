@@ -2,7 +2,7 @@
     "port": 80,
     "targets": [
         {
-            "name": "",
+            "name": "test",
             "path": "",
             "keeplocal": [ ],
             "mail": {

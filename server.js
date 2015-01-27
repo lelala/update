@@ -1,11 +1,26 @@
 ﻿var procstreams = require('procstreams');
 var http = require('http');
-var express = require('express')();
+var express = require('express');
+var app = express();
 var config = require('./config.json');
+var path = require('path');
+var bodyParser = require('body-parser');
+
+
+
+app.use(bodyParser());
+// 設定、啟動server
+app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 config.targets.forEach(function (target) {
     var run = function (req, res) {
-        var version = req.params.version;
+        var version = req.body.version;
         var log = 'Update ' + target.name + ":";
         var opt = { cwd: target.path };
         log += "\n    at: " + new Date().toLocaleString();
@@ -81,7 +96,7 @@ config.targets.forEach(function (target) {
         
         command('git fetch');
         
-        if (version) {
+        if (version && version != "HEAD") {
             command('git show ' + version);
             command('git checkout -f ' + version);
         }
@@ -145,14 +160,11 @@ config.targets.forEach(function (target) {
             }, 1000);
         });
     };
-    if (target.requireVersion) {
-
-    }
-    else {
-        express.get('/' + target.name, run);
-    }
-    express.get('/' + target.name + '/v/:version', run);
+    app.post('/' + target.name, run);
+    app.get('/' + target.name, function (req, res) {
+        res.render('root');
+    });
 });
-http.createServer(express).listen(config.port, function () {
+http.createServer(app).listen(config.port, function () {
     console.log('Express server listening on port ' + config.port);
 });

@@ -34,7 +34,19 @@
     <Content Include=".foreverignore" />
     <Content Include="config.json" />
     <Content Include="package.json" />
+    <Content Include="public\css\base.css" />
+    <Content Include="public\css\bootstrap.min.css" />
+    <Content Include="public\css\font-awesome.min.css" />
+    <Content Include="public\css\images\loading.gif" />
+    <Content Include="public\css\images\page-bg.gif" />
     <Content Include="README.md" />
+    <Content Include="views\root.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="public\css\" />
+    <Folder Include="public\css\images\" />
+    <Folder Include="views\" />
+    <Folder Include="public\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
   <ProjectExtensions>
