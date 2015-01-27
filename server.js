@@ -24,11 +24,11 @@ config.targets.forEach(function (target) {
         
         
         var isEMPTY = /^\s*$/i;
-        if (isEMPTY.test(version))) {
+        if (isEMPTY.test(version)) {
             res.end("version number is required.");
             return;
         }
-
+        
         var isHEAD = /^\s*head\s*$/i;
         if (target.requireVersion && (isHEAD.test(version))) {
             res.end("version number is required.");
