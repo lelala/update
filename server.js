@@ -110,12 +110,12 @@ config.targets.forEach(function (target) {
         
         command('git fetch');
         
-        if (version && version != "HEAD") {
+        if (version && isHEAD.test(version))
+            command('git checkout -f');
+        else {
             command('git show ' + version);
             command('git checkout -f ' + version);
         }
-        else
-            command('git checkout -f');
         
         keeplocal.forEach(function (file, index) {
             command('mv ' + file + ' ' + __dirname + '/__keeplocal/del' + index + '.l');
@@ -172,7 +172,7 @@ config.targets.forEach(function (target) {
                                 command(target.finalCommand, false);
                             }
                         });
-                    } else {   
+                    } else {
                         if (target.finalCommand) {
                             console.log('finalCommand: ' + target.finalCommand);
                             command(target.finalCommand, false);
