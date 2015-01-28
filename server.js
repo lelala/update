@@ -109,8 +109,8 @@ config.targets.forEach(function (target) {
         });
                 
         if (version && isHEAD.test(version)) {
-            command('git reset --hard');
-            command('git pull');
+            command('git reset --hard HEAD');
+            command('git pull --rebase');
         }
         else {
             command('git fetch');
