@@ -107,12 +107,13 @@ config.targets.forEach(function (target) {
         keeplocal.forEach(function (file, index) {
             command('/bin/cp -f ' + file + ' ' + __dirname + '/__keeplocal/l' + index + '.l');
         });
-        
-        command('git fetch');
-        
-        if (version && isHEAD.test(version))
-            command('git checkout -f');
+                
+        if (version && isHEAD.test(version)) {
+            command('git reset --hard');
+            command('git pull');
+        }
         else {
+            command('git fetch');
             command('git show ' + version);
             command('git checkout -f ' + version);
         }
